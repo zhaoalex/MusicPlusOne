@@ -1,6 +1,6 @@
 from music21 import *
 import Tkinter, tkFileDialog
-from ScoreSystem import firstPass
+from ScoreSystem import firstPass, calcCertainty
 
 def midiToStream():
 	file1 = tkFileDialog.askopenfilename(title="PUHLEEEZ Select a MIDI File kthxbai")
@@ -13,12 +13,15 @@ def separateMeasures(stream1): # only 4/4 for now
 
 def harmonize(score1):
 	harmony1 = stream.Stream()
-	for i in range(0, len(score1[0])):
+	allCertainties = []
+	for i in range(0, len(score1[0])): # first pass
 		chordName = firstPass(score1[0][i], 0)
 		meChord = harmony.ChordSymbol(chordName)
 		meChord.writeAsChord = True
 		meChord.quarterLength = 4
 		harmony1.append(meChord)
+		allCertainties.append(calcCertainty(score1[0][i], 0, meChord))
+	print(allCertainties)
 	score1.insert(harmony1)
 	score1.show('musicxml')
 	return score1

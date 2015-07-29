@@ -2,7 +2,7 @@ from music21 import *
 
 chordList = [[0, 4, 7], [5, 9, 0], [7, 11, 2], [7, 11, 2, 5], [9, 0, 4], [2, 5, 9], [4, 7, 11], [0, 3, 7], \
 [5, 8, 0], [7, 10, 2], [8, 0, 3], [2, 5, 8], [3, 7, 10], [10, 2, 5]]
-chords = ["CM", "FM", "GM", "G7", "Am", "Dm", "Em", "Cm", "Fm", "Gm", "A-M", "Do", "E-M", "B-M"]
+chordNameList = ["CM", "FM", "GM", "G7", "Am", "Dm", "Em", "Cm", "Fm", "Gm", "A-M", "Do", "E-M", "B-M"]
 majmin = [0, 0, 2, 2, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1] # 0 is Maj, 1 is min, 2 is both
 
 def firstPass(measure1, quality):
@@ -41,4 +41,22 @@ def findMaxIndex(chordScore): # @return string of chord; this only gives the fir
 			max = chordScore[i]
 			maxIndex = i
 
-	return chords[maxIndex]
+	return chordNameList[maxIndex]
+
+def calcRevScore(measure1, chordName): # @return num notes in chord present / total notes. maybe only consider the chordNameList relevant to that quality?
+	revChordScore = 0
+	noteList = measure1.getElementsByClass('Note')
+	index = chordNameList.index(chordName)
+	usedChordPitches = [0] * len(chordList[index]) # 0 is unused, 1 is used
+	for i in range(0, len(chordList[index])):
+		for j in range(0, len(noteList)):
+			if chordList[index][i] == noteList[j].pitchClass and usedChordPitches[i] == 0:
+				revChordScore += 1
+				usedChordPitches[i] = 1
+	revChordScore /= float(len(noteList))
+	return revChordScore
+
+def calcCertainty(measure1, quality, chord):
+	chordScore = calcScore(measure1, quality)
+	revChordScore = calcRevScore(measure1, chordNameList[chordList.index(chord.pitchClasses)])
+	return chordScore[chordNameList.index(findMaxIndex(chordScore))] * revChordScore

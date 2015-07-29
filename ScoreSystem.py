@@ -33,7 +33,8 @@ def calcScore(measure1, quality):
 				chordScore[j] += 1.0
 	return chordScore
 
-def findMaxIndex(chordScore): # @return string of chord; this only gives the first solution!
+# @return string of chord; this only gives the first solution!
+def findMaxIndex(chordScore):
 	max = chordScore[0]
 	maxIndex = 0
 	for i in range(0, len(chordScore)):
@@ -43,7 +44,8 @@ def findMaxIndex(chordScore): # @return string of chord; this only gives the fir
 
 	return chordNameList[maxIndex]
 
-def calcRevScore(measure1, chordName): # @return num notes in chord present / total notes. maybe only consider the chordNameList relevant to that quality?
+# @return num notes in chord present / total notes in chord. maybe only consider the chordNameList relevant to that quality?
+def calcRevScore(measure1, chordName):
 	revChordScore = 0
 	noteList = measure1.getElementsByClass('Note')
 	index = chordNameList.index(chordName)
@@ -53,10 +55,11 @@ def calcRevScore(measure1, chordName): # @return num notes in chord present / to
 			if chordList[index][i] == noteList[j].pitchClass and usedChordPitches[i] == 0:
 				revChordScore += 1
 				usedChordPitches[i] = 1
-	revChordScore /= float(len(noteList))
+	revChordScore /= float(len(chordList[index]))
 	return revChordScore
 
 def calcCertainty(measure1, quality, chord):
 	chordScore = calcScore(measure1, quality)
 	revChordScore = calcRevScore(measure1, chordNameList[chordList.index(chord.pitchClasses)])
-	return chordScore[chordNameList.index(findMaxIndex(chordScore))] * revChordScore
+	return chordScore[chordList.index(chord.pitchClasses)] * revChordScore
+	# remember that for all chord scores, 0.5 is added to each note in the chord! take into account later

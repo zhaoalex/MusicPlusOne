@@ -20,25 +20,27 @@ def calcCertainty(measure1, quality, chord):
 #TODO: first and last measures: give tonic one extra pt
 def calcScore(measure1, quality):
 	chordScore = [0] * len(chordList)
-	allNotes = measure1.getElementsByClass('Note')
-	noteList = []
-	for i in range(0, len(allNotes)):
-		if allNotes[i].offset % 1.0 == 0.0:
-			noteList.append(allNotes[i])
+	noteList = measure1.getElementsByClass('Note') # used to be allNotes
 	for i in range(0, len(noteList)):
 		noteList[i].quarterLength = roundNoteDurations(noteList[i])
 	for i in range(0, len(noteList)):
 		for j in range(0, len(chordList)):
 			if noteList[i].pitchClass in chordList[j]:
-				if i == 0:
+				if i == 0: # first beat gets 1 pt extra
 					chordScore[j] += 1
+				if noteList[i].offset == 1.0: # second beat (upbeat) gets .25 extra
+					chordScore[j] += 0.25
+				elif noteList[i].offset == 2.0: # third beat (downbeat) gets .5 extra
+					chordScore[j] += 0.5
+				elif noteList[i].offset == 3.0: # fourth beat (upbeat) gets .25 extra
+					chordScore[j] += 0.25
 				if quality == 0: # Major
 					if majmin[j] == 1:
 						chordScore[j] -= 0.5
 				else: # minor
 					if majmin[j] == 0:
 						chordScore[j] -= 0.5
-				chordScore[j] += noteList[i].quarterLength
+				chordScore[j] += noteList[i].quarterLength # add the length of the note
 	return chordScore
 
 # @return string of chord; this only gives the first solution!
@@ -49,7 +51,7 @@ def findMaxIndex(chordScore):
 		if chordScore[i] > max:
 			max = chordScore[i]
 			maxIndex = i
-
+	print(chordNameList[maxIndex])
 	return chordNameList[maxIndex]
 
 # @return num notes in chord present / total notes in chord. maybe only consider the chordNameList relevant to that quality?

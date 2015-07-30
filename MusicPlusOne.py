@@ -3,54 +3,69 @@ import Tkinter, tkFileDialog
 from ScoreSystem import firstPass, calcCertainty
 from StateMachine import stateMachine
 
-def midiToStream():
-	file1 = tkFileDialog.askopenfilename(title="PUHLEEEZ Select a MIDI File kthxbai")
-	score1 = converter.parse(file1)
-	"""test = score1.getElementsByClass('Measure')
-	for i in range(0, len(test)):
-		print("LENGTH:" + test[i].quarterLengthFloat)"""
+score1 = None
+keyOptions = ["C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab", "A", "A#/Bb", "B"]
+
+def midiToStream(filename):
+	score1 = converter.parse(filename)
 	return score1
 
 def separateMeasures(stream1): # only 4/4 for now
 	return stream1.makeMeasures()
 
-def harmonize(melody):
+def transposeStream(score1, keyName):
+	n = keyOptions.index(keyName)
+	try:
+		score1.flat.transpose(-n, inPlace = True)
+	except TypeError:
+		pass
+	return score1
+
+def transposeBack(score1, keyName):
+	n = keyOptions.index(keyName)
+	try:
+		score1.flat.transpose(n, inPlace = True)
+	except TypeError:
+		pass
+	return score1
+
+def harmonize(score1, quality):
 	harmony1 = stream.Stream()
 	allCertainties = []
-	for i in range(0, len(score1[0])): # first pass
-		chordName = firstPass(score1[0][i], 0)
+	for i in range(0, len(score1[0])): # first pass: SS
+		# WHOLE RESTS DO NOT WORK
+		chordName = firstPass(score1[0][i], quality)
 		meChord = harmony.ChordSymbol(chordName)
 		meChord.writeAsChord = True
 		meChord.quarterLength = 4
 		harmony1.append(meChord)
-		allCertainties.append(calcCertainty(score1[0][i], 0, meChord))
+		allCertainties.append(calcCertainty(score1[0][i], quality, meChord))
 	print(allCertainties)
-	# harmony1 = harmony1.makeMeasures()
-	allChords = stateMachine(score1[0], harmony1, allCertainties, 0)
+	allChordsPass1 = stateMachine(score1[0], harmony1, allCertainties, quality)
 	harmony2 = stream.Stream()
-	for i in allChords: # i can easily make this repeat: get the array of all certainties again, check if new certainties = old certainties
+	for i in allChordsPass1:
 		harmony2.append(i)
-	score1.insert(harmony1) # harmony2
-	# score1.show('musicxml')
-	# score1.show('text')
+	if (harmony2.getElementsByClass('ChordSymbol')[0].bass().octave > 3):
+		try:
+			harmony2.flat.transpose(-12, inPlace = True)
+		except TypeError:
+			pass
+	score1.insert(harmony2)
 	return score1
-
-def streamToMidi(score1):
-	file2 = tkFileDialog.asksaveasfilename(title="PUHLEEEEEZ Choose Save Location kthxbai") + ".mid"
+def streamToMidi():
+	file2 = tkFileDialog.asksaveasfilename(title="Choose Save Location") + ".mid"
 	m = midi.translate.streamToMidiFile(score1)
 	m.open(file2, 'wb')
 	m.write()
 	m.close()
 
-root = Tkinter.Tk()
-root.withdraw()
-
-score1 = stream.Score()
-melody = midiToStream()
-melody = separateMeasures(melody)
-score1.insert(melody)
-score1 = harmonize(score1)
-# score1.show('text')
-score1.show('musicxml')
-
-# streamToMidi(score1)
+def doHarmonization(filename, key, quality):
+	global score1
+	score1 = stream.Score()
+	melody = midiToStream(filename)
+	melody = separateMeasures(melody)
+	melody = transposeStream(melody, key)
+	score1.insert(melody)
+	score1 = harmonize(score1, quality)
+	score1 = transposeBack(score1, key)
+	return score1

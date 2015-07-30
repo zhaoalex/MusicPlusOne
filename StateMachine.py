@@ -3,35 +3,51 @@ from ScoreSystem import indexFromChord, calcCertainty
 
 chordNameList = ["CM", "FM", "GM", "G7", "Am", "Dm", "Em", "Cm", "Fm", "Gm", "A-M", "Do", "E-M", "B-M"]
 
-states = ["GM FM Am Dm Em".split(), "GM CM Dm".split(), "CM Am FM A-M".split(), "CM Am".split(), "FM Dm GM".split(), \
+states = ["GM FM Am Dm Em".split(), "GM CM Dm".split(), "CM Cm Am FM A-M".split(), "CM Cm Am".split(), "FM Dm GM".split(), \
 "GM".split(), "FM".split(), "GM Gm Fm A-M Do E-M B-M".split(), "GM Gm Cm Do".split(), "Cm A-M Fm".split(), "Fm Do".split(), \
 "GM Gm".split(), "Fm A-M".split(), "E-M".split()] # options the chords can GO TO
 
-# one chord at a time
-def stateMachine(melody1, harmony1, certainties, quality):
-	melMeasures = melody1.getElementsByClass('Measure')
-	allChords = harmony1.getElementsByClass('Chord')
+# remember, we're assuming one chord per measure.
+def stateMachine(melody1, harmony1, origCertainties, quality):
+	allMeasures = melody1.getElementsByClass('Measure')
+	allChords = harmony1.getElementsByClass('ChordSymbol')
+	allChordsList = []
 	for i in range(0, len(allChords)):
-		newCertainties = []
-		if (certainties[i] < 2.6):
-			if i != 0:
-				chordOptions = states[indexFromChord(allChords[i - 1])]
-				for j in chordOptions: # TODO: ASSUMING ONE CHORD PER MEASURE
-					newMeasure = stream.Measure()
-					newMeasure.append(allChords[i])
-					newCertainties.append(calcCertainty(melMeasures[i], quality, allChords[i]) + 1)
-				if chordNameList[indexFromChord(allChords[i])] not in chordOptions:
-					chordOptions.append(chordNameList[indexFromChord(allChords[i])])
-					newCertainties.append(certainties[i])
-				index = -1
-				maxCrnty = newCertainties[0]
-				for j in range(0, len(newCertainties)):
-					if newCertainties[j] > maxCrnty:
-						index = j
-				# print(chordOptions)
-				print(newCertainties)
-				newChord = harmony.ChordSymbol(chordOptions[index])
-				newChord.writeAsChord = True
-				newChord.quarterLength = 4
-				allChords[i] = newChord
-	return allChords
+		allChordsList.append(allChords[i])
+	for i in range(1, len(origCertainties)):
+		if origCertainties[i] < 2.6:
+			print(allChords[i])
+			prevChord = allChords[i - 1]
+			possIndex = indexFromChord(prevChord)
+			print(possIndex)
+			possibilities = states[possIndex]
+			possibilities.insert(0, chordNameList[indexFromChord(prevChord)])
+			newCertainties = []
+			for j in range(0, len(possibilities)):
+				tempChord = harmony.ChordSymbol(possibilities[j])
+				newCertainties.append(calcCertainty(allMeasures[i], quality, tempChord))
+				newCertainties[j] += 1.0
+			possibilities.append(chordNameList[indexFromChord(allChords[i])])
+			print(possibilities)
+			newCertainties.append(origCertainties[i])
+			print(newCertainties)
+			mostCertainIndex = getMostCertain(newCertainties)
+			print(mostCertainIndex)
+			newChord = harmony.ChordSymbol(possibilities[mostCertainIndex])
+			newChord.writeAsChord = True
+			newChord.quarterLength = 4
+			print(newChord)
+			allChordsList[i] = newChord
+	harmony2 = stream.Stream()
+	for i in allChordsList:
+		harmony2.append(i)
+	return harmony2
+
+def getMostCertain(certainties):
+	index = 0
+	maxCrtnty = certainties[0]
+	for i in range(0, len(certainties)):
+		if certainties[i] > maxCrtnty:
+			index = i
+			maxCrtnty = certainties[i]
+	return index

@@ -14,7 +14,7 @@ def midiToStream():
 def separateMeasures(stream1): # only 4/4 for now
 	return stream1.makeMeasures()
 
-def harmonize(score1):
+def harmonize(melody):
 	harmony1 = stream.Stream()
 	allCertainties = []
 	for i in range(0, len(score1[0])): # first pass
@@ -24,9 +24,9 @@ def harmonize(score1):
 		meChord.quarterLength = 4
 		harmony1.append(meChord)
 		allCertainties.append(calcCertainty(score1[0][i], 0, meChord))
-		print(allCertainties)
-		# harmony1 = harmony1.makeMeasures()
-	allChords = stateMachine(harmony1, allCertainties, 0)
+	print(allCertainties)
+	# harmony1 = harmony1.makeMeasures()
+	allChords = stateMachine(score1[0], harmony1, allCertainties, 0)
 	harmony2 = stream.Stream()
 	for i in allChords: # i can easily make this repeat: get the array of all certainties again, check if new certainties = old certainties
 		harmony2.append(i)

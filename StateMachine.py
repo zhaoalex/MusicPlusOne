@@ -8,7 +8,8 @@ states = ["GM FM Am Dm Em".split(), "GM CM Dm".split(), "CM Am FM A-M".split(), 
 "GM Gm".split(), "Fm A-M".split(), "E-M".split()] # options the chords can GO TO
 
 # one chord at a time
-def stateMachine(harmony1, certainties, quality):
+def stateMachine(melody1, harmony1, certainties, quality):
+	melMeasures = melody1.getElementsByClass('Measure')
 	allChords = harmony1.getElementsByClass('Chord')
 	for i in range(0, len(allChords)):
 		newCertainties = []
@@ -17,8 +18,8 @@ def stateMachine(harmony1, certainties, quality):
 				chordOptions = states[indexFromChord(allChords[i - 1])]
 				for j in chordOptions: # TODO: ASSUMING ONE CHORD PER MEASURE
 					newMeasure = stream.Measure()
-					newMeasure.append(harmony1[i])
-					newCertainties.append(calcCertainty(newMeasure, quality, harmony.ChordSymbol(j)) + 1)
+					newMeasure.append(allChords[i])
+					newCertainties.append(calcCertainty(melMeasures[i], quality, allChords[i]) + 1)
 				if chordNameList[indexFromChord(allChords[i])] not in chordOptions:
 					chordOptions.append(chordNameList[indexFromChord(allChords[i])])
 					newCertainties.append(certainties[i])

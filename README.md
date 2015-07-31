@@ -3,7 +3,7 @@ A music harmonizer; given a melody, MusicPlusOne can generate the backing accomp
 
 MusicPlusOne **requires** the music21 library to function. Download music21 here: http://web.mit.edu/music21
 
-MusicPlusOne was created for UCSD COSMOS 2015, Cluster 9: Music and Technology.
+MusicPlusOne was created by Alex Zhao, Kalen Chang, Aditya Nadkarni, and Bryan Yang for the UCSD COSMOS 2015 Cluster 9 (Music and Technology) final project.
 
 # How to use
 NOTE: MusicPlusOne uses MIDI files for input and output. Your melody must be in the form of a MIDI file.

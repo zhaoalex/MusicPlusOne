@@ -16,10 +16,8 @@ def stateMachine(melody1, harmony1, origCertainties, quality):
 		allChordsList.append(allChords[i])
 	for i in range(1, len(origCertainties)):
 		if origCertainties[i] < 2.6:
-			print(allChords[i])
 			prevChord = allChords[i - 1]
 			possIndex = indexFromChord(prevChord)
-			print(possIndex)
 			possibilities = states[possIndex]
 			possibilities.insert(0, chordNameList[indexFromChord(prevChord)])
 			newCertainties = []
@@ -28,15 +26,11 @@ def stateMachine(melody1, harmony1, origCertainties, quality):
 				newCertainties.append(calcCertainty(allMeasures[i], quality, tempChord))
 				newCertainties[j] += 1.0
 			possibilities.append(chordNameList[indexFromChord(allChords[i])])
-			print(possibilities)
 			newCertainties.append(origCertainties[i])
-			print(newCertainties)
 			mostCertainIndex = getMostCertain(newCertainties)
-			print(mostCertainIndex)
 			newChord = harmony.ChordSymbol(possibilities[mostCertainIndex])
 			newChord.writeAsChord = True
 			newChord.quarterLength = 4
-			print(newChord)
 			allChordsList[i] = newChord
 	harmony2 = stream.Stream()
 	for i in allChordsList:

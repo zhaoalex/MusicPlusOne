@@ -20,9 +20,9 @@ def calcCertainty(measure1, quality, chord):
 #TODO: first and last measures: give tonic one extra pt
 def calcScore(measure1, quality):
 	chordScore = [0] * len(chordList)
-	noteList = measure1.getElementsByClass('Note') # used to be allNotes
+	noteList = measure1.getElementsByClass('Note')
 	for i in range(0, len(noteList)):
-		noteList[i].quarterLength = roundNoteDurations(noteList[i])
+		noteList[i].quarterLength = roundNoteDurations(noteList[i]) # round lengths of notes to nearest 8th note
 	for i in range(0, len(noteList)):
 		for j in range(0, len(chordList)):
 			if noteList[i].pitchClass in chordList[j]:
@@ -34,10 +34,10 @@ def calcScore(measure1, quality):
 					chordScore[j] += 0.5
 				elif noteList[i].offset == 3.0: # fourth beat (upbeat) gets .25 extra
 					chordScore[j] += 0.25
-				if quality == 0: # Major
+				if quality == 0: # if key is major, decrease scores for all minor-only chords
 					if majmin[j] == 1:
 						chordScore[j] -= 0.5
-				else: # minor
+				else: # same with minor key; decrease score for all major-only chords
 					if majmin[j] == 0:
 						chordScore[j] -= 0.5
 				chordScore[j] += noteList[i].quarterLength # add the length of the note
@@ -51,7 +51,6 @@ def findMaxIndex(chordScore):
 		if chordScore[i] > max:
 			max = chordScore[i]
 			maxIndex = i
-	print(chordNameList[maxIndex])
 	return chordNameList[maxIndex]
 
 # @return num notes in chord present / total notes in chord. maybe only consider the chordNameList relevant to that quality?

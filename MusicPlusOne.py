@@ -40,7 +40,6 @@ def harmonize(score1, quality):
 		meChord.quarterLength = 4
 		harmony1.append(meChord)
 		allCertainties.append(calcCertainty(score1[0][i], quality, meChord))
-	print(allCertainties)
 	allChordsPass1 = stateMachine(score1[0], harmony1, allCertainties, quality)
 	harmony2 = stream.Stream()
 	for i in allChordsPass1:

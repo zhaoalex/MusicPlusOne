@@ -1,7 +1,7 @@
 # MusicPlusOne
 A music harmonizer; given a melody, MusicPlusOne can generate the backing accompaniment!
 
-MusicPlusOne requires the music21 library to function. Download music21 here: http://web.mit.edu/music21
+MusicPlusOne **requires** the music21 library to function. Download music21 here: http://web.mit.edu/music21
 
 MusicPlusOne was created for UCSD COSMOS 2015, Cluster 9: Music and Technology.
 

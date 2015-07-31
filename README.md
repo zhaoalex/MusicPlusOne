@@ -21,3 +21,9 @@ If the score seems strange (32nd rests, for example), simply export to MIDI and 
 * At times, the program may return a dissonant chord; this is because each chord always plays on the first beat while chords are calculated based on the entire measure
 * Only monophonic melodies are harmonized; any chords in the melody will cause the program to choose an incorrect chord
 * MusicPlusOne only generates one chord per measure
+
+# Future goals
+* Alberti bass
+* Multiple chords per measure
+* 16th note (or smaller) resolution
+* Polyphonic melody support

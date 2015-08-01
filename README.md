@@ -10,7 +10,7 @@ NOTE: MusicPlusOne uses MIDI files for input and output. Your melody must be in 
 
 To open MusicPlusOne, open the file named: **start.py**
 
-When MusicPlusOne is loaded, a GUI will pop up. click "Choose File" to choose your file, select the key your melody is in, and click "Harmonize" to harmonize or "Export to MIDI" to save the harmonization as a MIDI file.
+When MusicPlusOne is loaded, a GUI will pop up. click "Choose File" to choose your file, select the key your melody is in, and click "Harmonize" to harmonize directly or "Export to MIDI" to save the harmonization as a MIDI file.
 
 If the score seems strange (32nd rests, for example), simply export to MIDI and open your MIDI file in MuseScore or equivalent.
 

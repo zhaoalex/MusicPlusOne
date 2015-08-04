@@ -10,9 +10,7 @@ NOTE: MusicPlusOne uses MIDI files for input and output. Your melody must be in 
 
 To open MusicPlusOne, open the file named: **start.py**
 
-When MusicPlusOne is loaded, a GUI will pop up. click "Choose File" to choose your file, select the key your melody is in, and click "Harmonize" to harmonize directly or "Export to MIDI" to save the harmonization as a MIDI file.
-
-If the score seems strange (32nd rests, for example), simply export to MIDI and open your MIDI file in MuseScore or equivalent.
+When MusicPlusOne is loaded, a GUI will pop up. click "Choose File" to choose your file, select the key your melody is in, and click "Export to MIDI" to harmonize your melody and save it as a MIDI file.
 
 # Current Limitations
 * MusicPlusOne currently only functions in 4/4 time; any other time signature will not output correctly
@@ -24,8 +22,16 @@ If the score seems strange (32nd rests, for example), simply export to MIDI and 
 
 # Current Bugs
 * Harmony may be an octave higher than it should be at times
+* All data is currently stored in the first measure of melody instead of in the stream itself
+
+# Debug
+To run debug mode, simply run start.py from the terminal with the first argument as "debug": python start.py debug
+
+In debug mode, an extra button will pop up saying "DEBUG: Hrmnize". By clicking that button, MusicPlusOne will harmonize directly instead of exporting to a MIDI file first. However, this will cause many visual, rhythm-based, and note-based errors, therefore making this option faster but much more broken. To fix all errors, simply export to MIDI instead and open in MuseScore or equivalent.
 
 # Future goals
 * Multiple chords per measure
 * 16th note (or smaller) resolution
 * Polyphonic melody support
+* Generate harmony rhythm based on the melody
+* Add more harmony rhythms

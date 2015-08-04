@@ -10,9 +10,9 @@ states = ["GM FM Am Dm Em".split(), "GM CM Dm".split(), "CM Cm Am FM A-M".split(
 # remember, we're assuming one chord per measure.
 def stateMachine(melody1, harmony1, origCertainties, quality):
 	allMeasures = melody1.getElementsByClass('Measure')
-	allChords = harmony1.getElementsByClass('ChordSymbol')
+	allChords = harmony1.getElementsByClass('Chord')
 	allChordsList = []
-	for i in range(0, len(allChords)):
+	for i in range(len(allChords)):
 		allChordsList.append(allChords[i])
 	for i in range(1, len(origCertainties)):
 		if origCertainties[i] < 2.6:
@@ -21,7 +21,7 @@ def stateMachine(melody1, harmony1, origCertainties, quality):
 			possibilities = states[possIndex]
 			possibilities.insert(0, chordNameList[indexFromChord(prevChord)])
 			newCertainties = []
-			for j in range(0, len(possibilities)):
+			for j in range(len(possibilities)):
 				tempChord = harmony.ChordSymbol(possibilities[j])
 				newCertainties.append(calcCertainty(allMeasures[i], quality, tempChord))
 				newCertainties[j] += 1.0
@@ -40,7 +40,7 @@ def stateMachine(melody1, harmony1, origCertainties, quality):
 def getMostCertain(certainties):
 	index = 0
 	maxCrtnty = certainties[0]
-	for i in range(0, len(certainties)):
+	for i in range(len(certainties)):
 		if certainties[i] > maxCrtnty:
 			index = i
 			maxCrtnty = certainties[i]

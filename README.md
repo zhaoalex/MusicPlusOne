@@ -18,12 +18,14 @@ If the score seems strange (32nd rests, for example), simply export to MIDI and 
 * MusicPlusOne currently only functions in 4/4 time; any other time signature will not output correctly
 * The smallest possible note duration is an 8th note
 * Only adds tonal harmonics (no jazz harmonies, atonal harmonies, etc.)
-* At times, the program may return a dissonant chord; this is because each chord always plays on the first beat while chords are calculated based on the entire measure
+* At times, the program may return a chord that is dissonant from the melody; this is because all notes of the chord are played, and some of those notes may be dissonant with the melody
 * Only monophonic melodies are harmonized; any chords in the melody will cause the program to choose an incorrect chord
 * MusicPlusOne only generates one chord per measure
 
+# Current Bugs
+* Harmony may be an octave higher than it should be at times
+
 # Future goals
-* Alberti bass
 * Multiple chords per measure
 * 16th note (or smaller) resolution
 * Polyphonic melody support

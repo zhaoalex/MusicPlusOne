@@ -2,6 +2,7 @@ from music21 import *
 import Tkinter, tkFileDialog
 from ScoreSystem import firstPass, calcCertainty
 from StateMachine import stateMachine
+from AlbertiBass import doAlbertiBass
 
 score1 = None
 keyOptions = ["C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab", "A", "A#/Bb", "B"]
@@ -29,10 +30,10 @@ def transposeBack(score1, keyName):
 		pass
 	return score1
 
-def harmonize(score1, quality):
+def harmonize(score1, quality): #TODO: REWRITE ALL CODE USING HARMONY.FIGURE
 	harmony1 = stream.Stream()
 	allCertainties = []
-	for i in range(0, len(score1[0])): # first pass: SS
+	for i in range(len(score1[0])): # first pass: SS
 		# WHOLE RESTS DO NOT WORK
 		chordName = firstPass(score1[0][i], quality)
 		meChord = harmony.ChordSymbol(chordName)
@@ -40,19 +41,13 @@ def harmonize(score1, quality):
 		meChord.quarterLength = 4
 		harmony1.append(meChord)
 		allCertainties.append(calcCertainty(score1[0][i], quality, meChord))
-	allChordsPass1 = stateMachine(score1[0], harmony1, allCertainties, quality)
-	harmony2 = stream.Stream()
-	for i in allChordsPass1:
-		harmony2.append(i)
-	if (harmony2.getElementsByClass('ChordSymbol')[0].bass().octave > 3):
-		try:
-			harmony2.flat.transpose(-12, inPlace = True)
-		except TypeError:
-			pass
+	harmony2 = stateMachine(score1[0], harmony1, allCertainties, quality)
+	harmony2 = doAlbertiBass(harmony2)
 	score1.insert(harmony2)
 	return score1
-def streamToMidi():
-	file2 = tkFileDialog.asksaveasfilename(title="Choose Save Location") + ".mid"
+
+def streamToMidi(filename):
+	file2 = tkFileDialog.asksaveasfilename(title="Choose Save Location", initialfile=filename, defaultextension=".mid")
 	m = midi.translate.streamToMidiFile(score1)
 	m.open(file2, 'wb')
 	m.write()
